@@ -49,7 +49,7 @@ async function upload() {
 
   let { data, error } = await supabaseClient
     .storage
-    .from("Medical_files")
+    .from("medical_files")
     .upload(fileName, file);
 
   if (error) {
