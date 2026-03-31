@@ -126,7 +126,7 @@ function addRowToTable(category, fileName, url) {
 async function loadExistingFiles() {
   const { data, error } = await supabaseClient
     .storage
-    .from("reports")
+    .from("medical_files")
     .list("", { limit: 100, offset: 0 });
 
   if (error) {
