@@ -1,4 +1,4 @@
-console.log("JS loaded successfully"); // ✅ Fixed: was "onsole.log"
+console.log("Supabase client initialized:", supabaseClient); // ✅ Fixed: was "onsole.log"
 
 // ✅ Supabase setup
 const SUPABASE_URL = "https://ulwsvsakamdpmytptdex.supabase.co";
