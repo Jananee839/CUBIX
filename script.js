@@ -139,7 +139,7 @@ async function loadExistingFiles() {
   for (const file of data) {
     const { data: urlData } = supabaseClient
       .storage
-      .from("reports")
+      .from("medical_files")
       .getPublicUrl(file.name);
 
     // ✅ Category is unknown for old files, so we label them "Unknown"
