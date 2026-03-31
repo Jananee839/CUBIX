@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Health Record Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== LOGIN PAGE ===================== -->
+<div id="loginPage">
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="left-inner">
+        <div class="brand-logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="10" fill="white" fill-opacity="0.25"/>
+            <path d="M18 8v20M8 18h20" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+          <span>MediRecord</span>
+        </div>
+        <div class="illustration">
+          <svg viewBox="0 0 260 260" fill="none">
+            <ellipse cx="130" cy="210" rx="80" ry="22" fill="#6B6FC5" fill-opacity="0.45"/>
+            <ellipse cx="130" cy="205" rx="62" ry="15" fill="#7C7FD0" fill-opacity="0.5"/>
+            <path d="M90 70 C90 70 80 100 80 130 C80 160 100 175 130 180 C160 175 180 160 180 130 C180 100 170 70 170 70" stroke="#2D2D5E" stroke-width="14" stroke-linecap="round" fill="none"/>
+            <line x1="90" y1="70" x2="78" y2="52" stroke="#2D2D5E" stroke-width="12" stroke-linecap="round"/>
+            <line x1="170" y1="70" x2="182" y2="52" stroke="#2D2D5E" stroke-width="12" stroke-linecap="round"/>
+            <circle cx="76" cy="48" r="8" fill="#4A4ABF"/>
+            <circle cx="184" cy="48" r="8" fill="#4A4ABF"/>
+            <circle cx="130" cy="183" r="20" fill="#2D2D5E"/>
+            <circle cx="130" cy="183" r="13" fill="#4A4ABF"/>
+            <circle cx="130" cy="183" r="6" fill="#7C7FD0"/>
+          </svg>
+        </div>
+        <div class="left-text">
+          <h2>Your Health,<br>Our Priority</h2>
+          <p>Securely store and access all your medical records in one place — anytime, anywhere.</p>
+        </div>
+        <div class="left-dots">
+          <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <div class="lang-selector">English (US) ▾</div>
+
+      <!-- LOGIN -->
+      <div id="loginCard" class="auth-card">
+        <h2 class="form-title">Welcome Back</h2>
+        <p class="form-subtitle">Login to your health record dashboard</p>
+        <div class="social-row">
+          <button class="social-btn" type="button"><img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="G"> Sign in with Google</button>
+          <button class="social-btn" type="button"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="F"> Facebook</button>
+        </div>
+        <div class="or-divider"><span>— OR —</span></div>
+        <div class="field-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com">
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="password" placeholder="Enter your password">
+            <button type="button" class="eye-btn" onclick="togglePass('password',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="extras-row">
+          <label class="remember"><input type="checkbox"> Remember me</label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button class="primary-btn" onclick="login()">Login</button>
+        <p class="switch-text">Don't have an account? <span onclick="showSignup()">Create Account</span></p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupCard" class="auth-card hidden">
+        <h2 class="form-title">Create Account</h2>
+        <p class="form-subtitle">Join us to manage your health records securely</p>
+        <div class="social-row">
+          <button class="social-btn" type="button"><img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="G"> Sign up with Google</button>
+          <button class="social-btn" type="button"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="F"> Facebook</button>
+        </div>
+        <div class="or-divider"><span>— OR —</span></div>
+        <div class="field-group"><label>Full Name</label><input type="text" id="signupName" placeholder="John Doe"></div>
+        <div class="field-group"><label>Email Address</label><input type="email" id="signupEmail" placeholder="you@example.com"></div>
+        <div class="field-group">
+          <label>Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="signupPassword" placeholder="Create a password">
+            <button type="button" class="eye-btn" onclick="togglePass('signupPassword',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="primary-btn">Create Account</button>
+        <p class="switch-text">Already have an account? <span onclick="showLogin()">Log in</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="app" style="display:none;">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <button class="hamburger" onclick="showPage('profileFill')" title="Edit Profile">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-brand">
+        <svg width="26" height="26" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="9" fill="#3B4AC8" fill-opacity="0.12"/>
+          <path d="M18 8v20M8 18h20" stroke="#3B4AC8" stroke-width="3.2" stroke-linecap="round"/>
+        </svg>
+        MediRecord
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a class="nav-link active" onclick="showPage('home')" id="nav-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a class="nav-link" onclick="showPage('dashboard')" id="nav-dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-link" onclick="showPage('upload')" id="nav-upload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload Files
+      </a>
+      <a class="nav-link" onclick="showPage('notes')" id="nav-notes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Notes
+      </a>
+      <a class="nav-link" onclick="showPage('reminder')" id="nav-reminder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Reminder
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-avatar" id="navAvatar">U</div>
+      <span class="nav-username" id="navUsername">User</span>
+    </div>
+  </nav>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <div class="mobile-nav">
+    <button onclick="showPage('home')" class="mob-btn active" id="mob-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span>
+    </button>
+    <button onclick="showPage('dashboard')" class="mob-btn" id="mob-dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Dashboard</span>
+    </button>
+    <button onclick="showPage('upload')" class="mob-btn" id="mob-upload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Upload</span>
+    </button>
+    <button onclick="showPage('notes')" class="mob-btn" id="mob-notes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><span>Notes</span>
+    </button>
+    <button onclick="showPage('reminder')" class="mob-btn" id="mob-reminder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg><span>Reminder</span>
+    </button>
+  </div>
+
+  <!-- ===== HOME PAGE ===== -->
+  <div id="page-home" class="page active-page">
+    <div class="page-container">
+
+      <div class="welcome-banner">
+        <div class="wb-text">
+          <p class="wb-greeting" id="greetingText">Good day,</p>
+          <h2 class="wb-name" id="wbName">User</h2>
+          <p class="wb-sub">Here's your health summary at a glance.</p>
+        </div>
+        <div class="wb-icon">
+          <svg viewBox="0 0 100 100" fill="none" width="90" height="90">
+            <circle cx="50" cy="50" r="45" fill="white" fill-opacity="0.12"/>
+            <path d="M50 25v50M25 50h50" stroke="white" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="20" stroke="white" stroke-width="3" fill="none" stroke-opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h3 class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Personal Information
+        </h3>
+        <button class="edit-btn" onclick="showPage('profileFill')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </button>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon" style="background:#EEF0FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="info-content"><span class="info-label">Full Name</span><span class="info-value" id="disp-name">— Not set —</span></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon" style="background:#FFF0F0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="info-content"><span class="info-label">Date of Birth</span><span class="info-value" id="disp-dob">— Not set —</span></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon" style="background:#F0FFF4;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="2" width="20" height="20"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+          </div>
+          <div class="info-content"><span class="info-label">Gender</span><span class="info-value" id="disp-gender">— Not set —</span></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon" style="background:#FFF5F5;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C53030" stroke-width="2" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="info-content"><span class="info-label">Blood Group</span><span class="info-value" id="disp-blood">— Not set —</span></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon" style="background:#EBF8FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3182CE" stroke-width="2" width="20" height="20"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.58 1.21h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="info-content"><span class="info-label">Phone Number</span><span class="info-value" id="disp-phone">— Not set —</span></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon" style="background:#FFFAF0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D69E2E" stroke-width="2" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="info-content"><span class="info-label">Email</span><span class="info-value" id="disp-email">— Not set —</span></div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:36px;">
+        <h3 class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="20" height="20"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Quick Actions
+        </h3>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="showPage('upload')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#667eea,#764ba2);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="24" height="24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <span>Upload File</span>
+        </div>
+        <div class="quick-card" onclick="showPage('dashboard')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#11998e,#38ef7d);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="24" height="24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <span>Dashboard</span>
+        </div>
+        <div class="quick-card" onclick="showPage('notes')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#f093fb,#f5576c);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span>Notes</span>
+        </div>
+        <div class="quick-card" onclick="showPage('reminder')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <span>Reminder</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PROFILE FILL PAGE ===== -->
+  <div id="page-profileFill" class="page">
+    <div class="page-container narrow">
+      <div class="pf-header">
+        <button class="back-btn" onclick="showPage('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to Home
+        </button>
+        <h2 class="pf-title">My Profile</h2>
+        <p class="pf-sub">Fill in your personal health details</p>
+      </div>
+
+      <div class="pf-avatar-row">
+        <div class="pf-avatar" id="pfAvatar">U</div>
+        <div>
+          <p class="pf-avatar-name" id="pfAvatarName">User</p>
+          <p class="pf-avatar-email" id="pfAvatarEmail">—</p>
+        </div>
+      </div>
+
+      <div class="pf-form">
+        <div class="pf-field"><label>Full Name</label><input type="text" id="pf-name" placeholder="e.g. Rahul Sharma"></div>
+        <div class="pf-row">
+          <div class="pf-field"><label>Date of Birth</label><input type="date" id="pf-dob"></div>
+          <div class="pf-field"><label>Gender</label>
+            <select id="pf-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select>
+          </div>
+        </div>
+        <div class="pf-row">
+          <div class="pf-field"><label>Blood Group</label>
+            <select id="pf-blood"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+          </div>
+          <div class="pf-field"><label>Phone Number</label><input type="tel" id="pf-phone" placeholder="+91 00000 00000"></div>
+        </div>
+        <div class="pf-field"><label>Emergency Contact Name</label><input type="text" id="pf-emergency-name" placeholder="e.g. Priya Sharma (Mother)"></div>
+        <div class="pf-field"><label>Emergency Contact Number</label><input type="tel" id="pf-emergency-num" placeholder="+91 00000 00000"></div>
+        <div class="pf-field"><label>Known Allergies</label><input type="text" id="pf-allergies" placeholder="e.g. Penicillin, Dust, None"></div>
+        <button class="primary-btn save-btn" onclick="saveProfile()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div id="page-dashboard" class="page">
+    <div class="page-container">
+
+      <!-- SPECIALTY GRID VIEW -->
+      <div id="dash-specialties">
+        <div class="section-header">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Medical Records
+          </h3>
+          <span class="dash-sub">Select a specialty to view or add files</span>
+        </div>
+
+        <div class="spec-grid" id="specGrid">
+          <!-- Injected by JS -->
+        </div>
+
+        <!-- ADD CUSTOM SPECIALTY BUTTON -->
+        <button class="add-spec-btn" onclick="openAddSpecModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Specialty
+        </button>
+      </div>
+
+      <!-- FILE DETAIL VIEW (shown when a specialty is clicked) -->
+      <div id="dash-files" style="display:none;">
+        <div class="section-header">
+          <button class="back-btn" onclick="closeDashFiles()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+            All Specialties
+          </button>
+        </div>
+
+        <div class="spec-detail-header" id="specDetailHeader">
+          <!-- Icon + name injected by JS -->
+        </div>
+
+        <div class="file-list" id="fileList">
+          <!-- Files injected by JS -->
+        </div>
+
+        <!-- Upload area for this specialty -->
+        <div class="spec-upload-area">
+          <label class="spec-upload-label" id="specUploadLabel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="28" height="28"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Click to upload a file to this specialty</span>
+            <input type="file" id="specFileInput" style="display:none;" onchange="handleSpecUpload(event)">
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ADD SPECIALTY MODAL -->
+  <div id="addSpecModal" class="modal-overlay" style="display:none;" onclick="closeAddSpecModal(event)">
+    <div class="modal-card">
+      <h3 class="modal-title">Add Custom Specialty</h3>
+      <p class="modal-sub">Give your new specialty a name and pick an icon color.</p>
+      <div class="field-group" style="margin-top:16px;">
+        <label>Specialty Name</label>
+        <input type="text" id="newSpecName" placeholder="e.g. Neurology, Physiotherapy…" maxlength="30">
+      </div>
+      <div class="modal-color-row">
+        <span style="font-size:13px;font-weight:600;color:var(--text-dark);">Icon Color</span>
+        <div class="color-opts">
+          <button class="col-opt selected" style="background:#3B4AC8;" data-color="#3B4AC8" onclick="selectColor(this)"></button>
+          <button class="col-opt" style="background:#E53E3E;" data-color="#E53E3E" onclick="selectColor(this)"></button>
+          <button class="col-opt" style="background:#38A169;" data-color="#38A169" onclick="selectColor(this)"></button>
+          <button class="col-opt" style="background:#D69E2E;" data-color="#D69E2E" onclick="selectColor(this)"></button>
+          <button class="col-opt" style="background:#805AD5;" data-color="#805AD5" onclick="selectColor(this)"></button>
+          <button class="col-opt" style="background:#DD6B20;" data-color="#DD6B20" onclick="selectColor(this)"></button>
+          <button class="col-opt" style="background:#319795;" data-color="#319795" onclick="selectColor(this)"></button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeAddSpecModal()">Cancel</button>
+        <button class="primary-btn" style="width:auto;padding:11px 28px;" onclick="addCustomSpecialty()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== UPLOAD PAGE ===== -->
+  <div id="page-upload" class="page">
+    <div class="page-container">
+
+      <!-- STEP 1: Choose method -->
+      <div id="up-step1">
+        <div class="section-header">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Medical Record
+          </h3>
+          <span class="dash-sub">Choose how you want to add your file</span>
+        </div>
+
+        <div class="up-method-grid">
+          <!-- QR SCAN -->
+          <div class="up-method-card" onclick="startQRScan()">
+            <div class="up-method-icon" style="background:linear-gradient(135deg,#3B4AC8,#6B79E0);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="34" height="34">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <path d="M14 14h2v2h-2zM18 14h3M14 18h2M18 18h3M21 21h-3v-3"/>
+              </svg>
+            </div>
+            <div class="up-method-title">Scan QR Code</div>
+            <div class="up-method-desc">Point your camera at a QR code on a medical report to instantly fetch and save the file</div>
+            <div class="up-method-badge qr-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+              Instant Scan
+            </div>
+          </div>
+
+          <!-- CAMERA CAPTURE -->
+          <div class="up-method-card" onclick="startCamera()">
+            <div class="up-method-icon" style="background:linear-gradient(135deg,#38A169,#48BB78);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="34" height="34">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+            <div class="up-method-title">Capture Report</div>
+            <div class="up-method-desc">Use your camera to photograph a physical medical report and save it to your records</div>
+            <div class="up-method-badge cam-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>
+              Photo Capture
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2A: QR SCANNER -->
+      <div id="up-step-qr" style="display:none;">
+        <div class="section-header">
+          <button class="back-btn" onclick="cancelUploadStep()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="up-scanner-box">
+          <div class="up-scanner-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            Point at the QR code on your medical report
+          </div>
+          <div class="up-video-wrap" id="qrVideoWrap">
+            <video id="qrVideo" autoplay playsinline muted></video>
+            <div class="scan-frame">
+              <div class="scan-corner tl"></div><div class="scan-corner tr"></div>
+              <div class="scan-corner bl"></div><div class="scan-corner br"></div>
+              <div class="scan-line" id="scanLine"></div>
+            </div>
+            <div class="scan-hint">Align QR code within the frame</div>
+          </div>
+          <div id="qrResult" class="qr-result" style="display:none;">
+            <div class="qr-result-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="2.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <div class="qr-result-title">QR Code Detected!</div>
+              <div class="qr-result-url" id="qrResultUrl"></div>
+            </div>
+          </div>
+          <button class="up-cancel-btn" onclick="cancelUploadStep()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Stop Scanning
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2B: CAMERA CAPTURE -->
+      <div id="up-step-cam" style="display:none;">
+        <div class="section-header">
+          <button class="back-btn" onclick="cancelUploadStep()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="up-scanner-box">
+          <div class="up-scanner-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="2" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Position the medical report clearly in frame
+          </div>
+          <div class="up-video-wrap">
+            <video id="camVideo" autoplay playsinline muted></video>
+            <div class="cam-overlay-guide">
+              <div class="cam-guide-rect"></div>
+            </div>
+          </div>
+          <!-- Captured preview -->
+          <div id="camPreviewWrap" style="display:none;">
+            <div class="cam-preview-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+              Photo captured — looks good?
+            </div>
+            <img id="camPreview" class="cam-preview-img" alt="Captured report"/>
+            <div class="cam-preview-actions">
+              <button class="cam-retake-btn" onclick="retakePhoto()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                Retake
+              </button>
+              <button class="cam-use-btn" onclick="proceedWithCapture()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>
+                Use This Photo
+              </button>
+            </div>
+          </div>
+          <canvas id="camCanvas" style="display:none;"></canvas>
+          <div id="camLive" style="display:block;">
+            <button class="cam-shutter-btn" onclick="capturePhoto()" title="Take Photo">
+              <div class="shutter-outer"><div class="shutter-inner"></div></div>
+            </button>
+          </div>
+          <button class="up-cancel-btn" onclick="cancelUploadStep()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Stop Camera
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: SELECT SPECIALTY & CONFIRM -->
+      <div id="up-step3" style="display:none;">
+        <div class="section-header">
+          <button class="back-btn" onclick="backToMethod()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+
+        <!-- Preview of captured item -->
+        <div class="up3-preview" id="up3Preview"></div>
+
+        <div class="up3-section-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3B4AC8" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Select a Specialty Category
+        </div>
+        <div class="up3-spec-list" id="up3SpecList">
+          <!-- Injected by JS -->
+        </div>
+
+        <button class="add-spec-btn" style="margin:16px auto 0;" onclick="openAddSpecFromUpload()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Custom Specialty
+        </button>
+
+        <button class="up3-save-btn" id="up3SaveBtn" onclick="saveToSpecialty()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+          Save to Dashboard
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== NOTES PAGE ===== -->
+  <div id="page-notes" class="page">
+    <div class="page-container">
+      <div class="feat-header">
+        <div class="feat-header-left">
+          <div class="feat-header-icon" style="background:linear-gradient(135deg,#3B4AC8,#6B79E0);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+          </div>
+          <div>
+            <h2 class="feat-title">My Notes</h2>
+            <p class="feat-subtitle">Personal health journal &amp; memos</p>
+          </div>
+        </div>
+        <button class="feat-new-btn" onclick="openNoteModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Note
+        </button>
+      </div>
+      <div class="notes-toolbar">
+        <div class="notes-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9499b8" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="notesSearch" class="notes-search" placeholder="Search notes..." oninput="renderNotes()">
+        </div>
+        <div class="filter-pills">
+          <button class="filter-pill active" data-tag="all" onclick="setNoteFilter('all',this)">All</button>
+          <button class="filter-pill" data-tag="general" onclick="setNoteFilter('general',this)">General</button>
+          <button class="filter-pill" data-tag="medication" onclick="setNoteFilter('medication',this)">Medication</button>
+          <button class="filter-pill" data-tag="diet" onclick="setNoteFilter('diet',this)">Diet</button>
+          <button class="filter-pill" data-tag="symptoms" onclick="setNoteFilter('symptoms',this)">Symptoms</button>
+          <button class="filter-pill" data-tag="other" onclick="setNoteFilter('other',this)">Other</button>
+        </div>
+      </div>
+      <div class="notes-grid" id="notesGrid"></div>
+    </div>
+  </div>
+
+  <!-- NOTE MODAL -->
+  <div id="noteModal" class="modal-overlay" style="display:none;" onclick="closeNoteModalOutside(event)">
+    <div class="modal-card note-modal-card">
+      <h3 class="modal-title" id="noteModalTitle">New Note</h3>
+      <p class="modal-sub">Add a personal health memo or journal entry</p>
+      <div class="field-group" style="margin-top:18px;">
+        <label>Title</label>
+        <input type="text" id="noteTitle" placeholder="e.g. Post-checkup notes..." maxlength="80">
+      </div>
+      <div class="field-group">
+        <label>Content</label>
+        <textarea id="noteContent" class="note-textarea" placeholder="Write your note here..." maxlength="1000"></textarea>
+      </div>
+      <div class="note-modal-row">
+        <div class="field-group" style="flex:1;margin-bottom:0;">
+          <label>Tag</label>
+          <select id="noteTag">
+            <option value="general">General</option>
+            <option value="medication">Medication</option>
+            <option value="diet">Diet</option>
+            <option value="symptoms">Symptoms</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label style="display:block;font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:8px;">Card Color</label>
+          <div class="note-color-row" id="noteColorPicker">
+            <button class="note-color-opt selected" data-color="#FFF8E1" style="background:#FFF8E1;" onclick="selectNoteColor(this)"></button>
+            <button class="note-color-opt" data-color="#E8F5E9" style="background:#E8F5E9;" onclick="selectNoteColor(this)"></button>
+            <button class="note-color-opt" data-color="#E3F2FD" style="background:#E3F2FD;" onclick="selectNoteColor(this)"></button>
+            <button class="note-color-opt" data-color="#FCE4EC" style="background:#FCE4EC;" onclick="selectNoteColor(this)"></button>
+            <button class="note-color-opt" data-color="#F3E5F5" style="background:#F3E5F5;" onclick="selectNoteColor(this)"></button>
+            <button class="note-color-opt" data-color="#E0F7FA" style="background:#E0F7FA;" onclick="selectNoteColor(this)"></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeNoteModal()">Cancel</button>
+        <button class="primary-btn" style="width:auto;padding:11px 28px;" onclick="saveNote()">Save Note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REMINDER PAGE ===== -->
+  <div id="page-reminder" class="page">
+    <div class="page-container">
+      <div class="feat-header">
+        <div class="feat-header-left">
+          <div class="feat-header-icon" style="background:linear-gradient(135deg,#E53E3E,#FC8181);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="12" y1="2" x2="12" y2="4"/></svg>
+          </div>
+          <div>
+            <h2 class="feat-title">Reminders</h2>
+            <p class="feat-subtitle">Medications, appointments &amp; check-ups</p>
+          </div>
+        </div>
+        <button class="feat-new-btn" style="background:linear-gradient(135deg,#E53E3E,#FC8181);box-shadow:0 6px 20px rgba(229,62,62,0.32);" onclick="openReminderModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Reminder
+        </button>
+      </div>
+
+      <!-- Summary chips -->
+      <div class="rem-summary-row" id="remSummary"></div>
+
+      <!-- Reminder list -->
+      <div id="reminderList"></div>
+
+    </div>
+  </div>
+
+  <!-- REMINDER MODAL -->
+  <div id="reminderModal" class="modal-overlay" style="display:none;" onclick="closeReminderModalOutside(event)">
+    <div class="modal-card rem-modal-card">
+      <h3 class="modal-title" id="remModalTitle">New Reminder</h3>
+      <p class="modal-sub">Set a medication, appointment or health reminder</p>
+      <div class="field-group" style="margin-top:18px;">
+        <label>Title</label>
+        <input type="text" id="remTitle" placeholder="e.g. Take Blood Pressure Medication" maxlength="80">
+      </div>
+      <div class="field-group">
+        <label>Description <span style="font-weight:400;color:var(--text-light);">(optional)</span></label>
+        <input type="text" id="remDesc" placeholder="e.g. 1 tablet after breakfast" maxlength="120">
+      </div>
+      <div class="rem-modal-dt-row">
+        <div class="field-group" style="flex:1;margin-bottom:0;">
+          <label>Date</label>
+          <input type="date" id="remDate">
+        </div>
+        <div class="field-group" style="flex:1;margin-bottom:0;">
+          <label>Time</label>
+          <input type="time" id="remTime">
+        </div>
+      </div>
+      <div class="rem-modal-dt-row" style="margin-top:16px;">
+        <div class="field-group" style="flex:1;margin-bottom:0;">
+          <label>Type</label>
+          <select id="remType">
+            <option value="medication">💊 Medication</option>
+            <option value="appointment">🏥 Appointment</option>
+            <option value="checkup">🩺 Check-up</option>
+            <option value="exercise">🏃 Exercise</option>
+            <option value="diet">🥗 Diet</option>
+            <option value="other">📌 Other</option>
+          </select>
+        </div>
+        <div class="field-group" style="flex:1;margin-bottom:0;">
+          <label>Repeat</label>
+          <select id="remRepeat">
+            <option value="none">No repeat</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeReminderModal()">Cancel</button>
+        <button class="primary-btn" style="width:auto;padding:11px 28px;background:linear-gradient(135deg,#E53E3E,#FC8181);box-shadow:0 6px 18px rgba(229,62,62,0.3);" onclick="saveReminder()">Save Reminder</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<script src="script.js"></script>
+<script>
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.style.opacity = inp.type === 'text' ? '1' : '0.5';
+}
+function showSignup() {
+  document.getElementById('loginCard').classList.add('hidden');
+  document.getElementById('signupCard').classList.remove('hidden');
+}
+function showLogin() {
+  document.getElementById('signupCard').classList.add('hidden');
+  document.getElementById('loginCard').classList.remove('hidden');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+  document.getElementById('page-' + name).classList.add('active-page');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const nl = document.getElementById('nav-' + name);
+  if (nl) nl.classList.add('active');
+  document.querySelectorAll('.mob-btn').forEach(b => b.classList.remove('active'));
+  const mb = document.getElementById('mob-' + name);
+  if (mb) mb.classList.add('active');
+  window.scrollTo(0, 0);
+  if (name === 'dashboard' && typeof renderSpecGrid === 'function') {
+    document.getElementById('dash-specialties').style.display = 'block';
+    document.getElementById('dash-files').style.display = 'none';
+    renderSpecGrid();
+  }
+  if (name === 'upload' && typeof resetUploadPage === 'function') {
+    resetUploadPage();
+  }
+  if (name === 'notes' && typeof renderNotes === 'function') { renderNotes(); }
+  if (name === 'reminder' && typeof renderReminders === 'function') { renderReminders(); }
+}
+
+function saveProfile() {
+  const p = {
+    name:          document.getElementById('pf-name').value.trim(),
+    dob:           document.getElementById('pf-dob').value,
+    gender:        document.getElementById('pf-gender').value,
+    blood:         document.getElementById('pf-blood').value,
+    phone:         document.getElementById('pf-phone').value.trim(),
+    emergencyName: document.getElementById('pf-emergency-name').value.trim(),
+    emergencyNum:  document.getElementById('pf-emergency-num').value.trim(),
+    allergies:     document.getElementById('pf-allergies').value.trim(),
+  };
+  localStorage.setItem('mediProfile', JSON.stringify(p));
+  loadProfileDisplay();
+  showPage('home');
+  showToast('Profile saved successfully!');
+}
+
+function loadProfileDisplay() {
+  const raw = localStorage.getItem('mediProfile');
+  if (!raw) return;
+  const p = JSON.parse(raw);
+  const set = (id, val) => { if (val) document.getElementById(id).textContent = val; };
+  set('disp-name',   p.name);
+  set('disp-dob',    p.dob ? formatDate(p.dob) : '');
+  set('disp-gender', p.gender);
+  set('disp-blood',  p.blood);
+  set('disp-phone',  p.phone);
+  if (p.name) {
+    const initial = p.name.charAt(0).toUpperCase();
+    document.getElementById('wbName').textContent      = p.name;
+    document.getElementById('navUsername').textContent = p.name;
+    document.getElementById('navAvatar').textContent   = initial;
+    document.getElementById('pfAvatar').textContent    = initial;
+    document.getElementById('pfAvatarName').textContent = p.name;
+  }
+  // re-fill form fields
+  document.getElementById('pf-name').value           = p.name || '';
+  document.getElementById('pf-dob').value            = p.dob  || '';
+  document.getElementById('pf-gender').value         = p.gender || '';
+  document.getElementById('pf-blood').value          = p.blood  || '';
+  document.getElementById('pf-phone').value          = p.phone  || '';
+  document.getElementById('pf-emergency-name').value = p.emergencyName || '';
+  document.getElementById('pf-emergency-num').value  = p.emergencyNum  || '';
+  document.getElementById('pf-allergies').value      = p.allergies || '';
+}
+
+function formatDate(str) {
+  if (!str) return '';
+  const d = new Date(str);
+  return d.toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+function setGreeting() {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Good morning,' : h < 17 ? 'Good afternoon,' : 'Good evening,';
+  document.getElementById('greetingText').textContent = g;
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 2800);
+}
+
+setGreeting();
+</script>
+</body>
+</html>
